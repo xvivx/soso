@@ -1,0 +1,54 @@
+{
+  "printWidth": 120,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "quoteProps": "preserve",
+  "proseWrap": "always",
+  "trailingComma": "es5",
+  "overrides": [
+    {
+      "files": [".prettierrc", ".eslintrc"],
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": ["*.css", "*.scss"],
+      "options": {
+        "parser": "css",
+        "singleQuote": false
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "parser": "html"
+      }
+    }
+  ],
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrderTypeScriptVersion": "5.7.3",
+  "importOrder": [
+    "^(react$)",
+    "^(react(.*)$)",
+    "<THIRD_PARTY_MODULES>",
+    "^@store$",
+    "^@store/(.*)$",
+    "^@hooks$",
+    "^@hooks/(.*)$",
+    "^@components$",
+    "^@components/(.*)$",
+    "^@utils$",
+    "^@utils/(.*)$",
+    "^@pages/(.*)$",
+    "^@mock/(.*)$",
+    "^@/(.*)$",
+    "^[./]"
+  ]
+}

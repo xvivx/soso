@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .detrade-button {
+    @apply inline-flex items-center justify-center max-w-full rounded-1.5 shadow active:translate-y-px outline-none transition-all whitespace-nowrap font-700 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .detrade-icon {
+    @apply size-6 text-secondary transition-colors shrink-0;
+  }
+
+  .detrade-card {
+    @apply p-4 s768:p-3 rounded-2  bg-layer3;
+
+    .detrade-table table {
+      @apply bg-layer3;
+    }
+    &.bg-layer4 {
+      .detrade-table table {
+        @apply bg-layer4;
+      }
+    }
+  }
+
+  .detrade-modal-footer {
+    @apply mt-3;
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition:
+    5000s ease-in-out,
+    color 5000s ease-in-out !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+
+.detrade {
+  --white: 255 255 255;
+  --black: 0 0 0;
+  --brand: 36 238 137;
+  --brand_alt: 159 232 113;
+  --up: 46 204 113;
+  --success: 36 238 137;
+  --error: 255 84 73;
+  --warn: 255 173 77;
+  --down: 255 84 73;
+  --selected: #d7ed47;
+  --text-primary: 255 255 255;
+  --text-primary_brand: #000;
+  --text-secondary: #b3bec1;
+  --text-tertiary: #849194;
+  --text-quarterary: #697072;
+  --border-main: rgba(228, 234, 240, 0.5);
+  --border-second: rgba(228, 234, 240, 0.3);
+  --border-thirdly: rgba(228, 234, 240, 0.1);
+  --border-input: #3a4142;
+  --bg-primary: #12181f;
+  --bg-secondary: #161d26;
+  --bg-layer1: #1e2121;
+  --bg-layer2: #232626;
+  --bg-layer3: #292d2e;
+  --bg-layer4: #323738;
+  --bg-layer5: #3a4142;
+  --bg-layer6: #4a5354;
+  --bg-layer7: #323738;
+  --bg-layer8: #292d2e;
+  --bg-tab_selected: #3a4142;
+  --bg-alpha5: rgba(255, 255, 255, 0.05);
+  --bg-alpha10: rgba(36, 238, 137, 0.1);
+  --view-h: 100vh;
+  --header-h: 48px;
+  --bottom-h: 49px;
+  --colorful1: #9fe871;
+  /* TODO: 先用外部平台的变量, 没弄清楚为什么这里定义的在apk里不生效 */
+  --safe-area-bottom: max(var(--safe-bottom, 0px), env(safe-area-inset-bottom, 0px));
+  --colorful4: #6c5d58;
+  --colorful5: #778187;
+  --colorful6: #857055;
+  --colorful7: #8b7270;
+  --colorful8: #866167;
+  --colorful9: #686299;
+  --colorful10: #564da1;
+  --colorful12: #d7ed47;
+  @apply bg-layer2 font-primary text-primary font-500 leading-normal;
+}
+
+.detrade.s1024 {
+  --header-h: 64px;
+  --bottom-h: 0;
+}
+
+@supports (--css: calc(100dvh)) {
+  .detrade {
+    --view-h: 100dvh;
+  }
+}
+
+.detrade-light {
+  --brand: 44 217 125;
+  --brand_alt: 131 194 92;
+  --success: 44 217 125;
+  --error: 205 48 48;
+  --warn: 255 173 77;
+  --selected: #d7ed47;
+  --text-primary: 23 26 26;
+  --text-primary_brand: #000000;
+  --text-secondary: #5f6d6d;
+  --text-tertiary: #92a0a0;
+  --text-quarterary: #b1b9b9;
+  --border-main: rgba(58, 65, 66, 0.4);
+  --border-second: rgba(58, 65, 66, 0.2);
+  --border-thirdly: rgba(58, 65, 66, 0.1);
+  --border-input: #dee9eb;
+  --bg-layer1: #e4e6e7;
+  --bg-layer2: #f4f4f4;
+  --bg-layer3: #ffffff;
+  --bg-layer4: #ffffff;
+  --bg-layer5: #f2f2f2;
+  --bg-layer6: #ffffff;
+  --bg-layer7: #f9f9f9;
+  --bg-layer8: #f4f4f4;
+  --bg-tab_selected: #ffffff;
+  --bg-alpha5: rgba(0, 0, 0, 0.05);
+  --bg-alpha10: rgba(36, 238, 137, 0.1);
+  --colorful4: #fcd5c8;
+  --colorful5: #cbe0f1;
+  --colorful6: #f4dcbd;
+  --colorful7: #f4cbbe;
+  --colorful8: #f5bebe;
+  --colorful9: #ccbef5;
+  --colorful10: #aaa5ff;
+  --colorful12: #d7ed47;
+}
+
+.h-full {
+  max-height: 100%;
+}
+
+/* 主题按钮 */
+.detrade-button.bg-brand {
+  background-image: linear-gradient(to right, #24ee89 0%, #9fe871 100%);
+  box-shadow:
+    0px -2px 0px 0px #1dca6a inset,
+    0px 0px 12px 0px #23ee884d;
+}
+.detrade-sell-button.bg-brand {
+  border-radius: 8px;
+  background-image: linear-gradient(90deg, #ff5449 12.24%, #ff7a49 100%);
+  box-shadow:
+    0px 0px 12px 0px rgba(255, 84, 73, 0.3),
+    0px -2px 0px 0px #b43b38 inset;
+}
+.detrade-button.bg-brand:active {
+  box-shadow:
+    0px 0px 0px 0px #1dca6a inset,
+    0px 0px 12px 0px #23ee884d;
+}
+.detrade-sell-button.bg-brand:active {
+  box-shadow:
+    0px 0px 12px 0px rgba(255, 84, 73, 0.3),
+    0px 0px 0px 0px #b43b38 inset;
+}
+.detrade-button-loading {
+  --loading-color: 179, 190, 193;
+  @apply relative text-transparent;
+  * {
+    opacity: 0;
+  }
+}
+.detrade-light .detrade-button-loading {
+  --loading-color: 95, 109, 109;
+}
+.detrade-button-loading::after {
+  @apply abs-center z-10 size-4 rounded-full text-secondary opacity-100 max-h-full max-w-full aspect-square;
+  content: "";
+  border: 3px solid rgba(var(--loading-color), 0.5);
+  border-top-color: rgba(var(--loading-color), 1);
+  animation: detrade-button-loading 1s linear infinite;
+}
+@keyframes detrade-button-loading {
+  to {
+    transform: translate3D(-50%, -50%, 0) rotate(360deg);
+  }
+}
+
+button:focus-visible {
+  @apply outline-none;
+}
+
+.detrade-input input {
+  text-align: inherit;
+}
+.detrade-input:has(input:focus) {
+  @apply border-brand;
+}
+
+.detrade-input:has(input:disabled) {
+  @apply cursor-not-allowed;
+}
+
+.detrade-input:has(input:disabled) input {
+  @apply opacity-50;
+}
+
+.detrade-radio button[data-state="checked"] {
+  @apply border-4 border-brand bg-black;
+}
+.detrade-checkbox button[data-state="checked"] {
+  @apply border-brand bg-brand;
+}
+
+/* 解决亮色模式下弹窗中的白色按钮hover看不清, secondary按钮看不清 */
+.detrade-light .detrade-modal .detrade-button.bg-layer3:hover,
+.detrade-light .detrade-modal .detrade-button.bg-layer4:hover,
+.detrade-light .detrade-modal .detrade-button.bg-layer5 {
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.03) 0%, rgba(0, 0, 0, 0.03) 100%);
+}
+
+[role="tabpanel"] {
+  @apply outline-none;
+}

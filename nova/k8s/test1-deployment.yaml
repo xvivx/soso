@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: binarytradeweb-test1
+  namespace: test-trade
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: binarytradeweb-test1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: binarytradeweb-test1
+      namespace: test-trade
+    spec:
+      imagePullSecrets:
+        - name: ecr-secret
+      containers:
+        - name: binarytradeweb-test1
+          image: $ECR_REGISTRY/test1_binarytradeweb/binarytradeweb:$IMAGE_TAG
+          ports:
+            - containerPort: 80
+              name: web-test1
+          resources:
+            requests:
+              cpu: 200m
+              memory: 500Mi
+            limits:
+              cpu: 2000m
+              memory: 4000Mi
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 12
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            failureThreshold: 12
+          volumeMounts:
+            - mountPath: /logs/
+              name: logs
+      volumes:
+        - name: logs
+          hostPath:
+            path: /data/logs/
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-binarytradeweb-test1
+  namespace: test-trade
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: binarytradeweb-test1
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: cert-manager
+type: Opaque
+stringData:
+  api-token: P7RfcY7Y6DGE0Rmfkg7yZJ4DuTDHHzZdb7f79xuU
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-dns01
+  namespace: test-trade
+spec:
+  acme:
+    privateKeySecretRef:
+      name: letsencrypt-dns01
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+      - dns01:
+          cloudflare:
+            email: seedc@proton.me # 替换成你的 cloudflare 邮箱账号，API Token 方式认证非必需，API Keys 认证是必需
+            apiTokenSecretRef:
+              key: api-token
+              name: cloudflare-api-token-secret # 引用保存 cloudflare 认证信息的 Secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: binarytradeweb-test1-crt
+  namespace: test-trade
+spec:
+  dnsNames:
+    - test1www.exchange2currency.com # 要签发证书的域名
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-dns01 # 引用 ClusterIssuer，指示采用 dns01 方式进行校验
+  secretName: binarytradeweb-test1-crt # 最终签发出来的证书会保存在这个 Secret 里面
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test1binary-web-ingress
+  namespace: test-trade
+  annotations:
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      add_header Access-Control-Allow-Origin *;
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  tls:
+    - secretName: binarytradeweb-test1-crt
+      hosts:
+        - test1www.exchange2currency.com
+  rules:
+    - host: test1www.exchange2currency.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix #值类型说明参考官方文档，有Exact和Prefix两种
+            backend:
+              service:
+                name: svc-binarytradeweb-test1
+                port:
+                  number: 80

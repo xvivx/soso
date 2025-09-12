@@ -1,0 +1,159 @@
+name: prod_currency-trade-web
+on:
+  workflow_dispatch:
+
+jobs:
+  build_currency-trade-web:
+    runs-on: [self-hosted,prod,linux,x64]
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+
+    - name: Cache yarn packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.yarn/cache
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-        
+
+    - name: Run install
+      uses: borales/actions-yarn@v4
+      with:
+        cmd: install # will run `yarn install` command
+
+    - name: Build production bundle
+      uses: borales/actions-yarn@v4
+      with:
+        cmd: build:prod # will run `yarn build:prod` command
+
+        # 新增：将上次备份的文件合并到当前构建目录
+    - name: Merge with previous build artifacts
+      run: |
+        echo "➡️ 将上次备份的构建文件合并到当前构建..."
+        if [ -d "/opt/web/prod/build" ]; then
+          echo "找到备份目录，复制文件到当前构建"
+          sudo cp -R --update=none /opt/web/prod/build/* ./build/
+          echo "✅ 已合并 $(sudo ls ./build | wc -l) 个文件"
+        else
+          echo "⚠️ 没有找到备份目录，跳过合并"
+        fi
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-southeast-1
+        
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+      
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.ref_name }}-${{ github.run_id }}
+      run: |
+        docker build -t $ECR_REGISTRY/binarytradeweb/binarytradeweb:${{ github.ref_name }}-${{ github.run_id }} .
+        docker push $ECR_REGISTRY/binarytradeweb/binarytradeweb:${{ github.ref_name }}-${{ github.run_id }}
+        
+    - name: Update kube config
+      run: aws eks update-kubeconfig --name prod-trade --region ap-southeast-1
+
+    - name: Replace variables in deployment.yaml
+      uses: datamonsters/replace-action@v2
+      with:
+        files: 'k8s/prod-deployment.yaml'
+        replacements: '$ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }},$IMAGE_TAG=${{ github.ref_name }}-${{ github.run_id }}'
+
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.25.3'
+
+    - name: apply deployment.yaml
+      run: kubectl apply -f k8s/prod-deployment.yaml
+
+    - name: Notify Lark on Success
+      if: success()
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+        "msg_type": "interactive",
+        "card": {
+          "config": {
+            "wide_screen_mode": true
+          },
+          "header": {
+            "title": {
+              "tag": "plain_text",
+              "content": "✅✅  【prod】- 构建成功✅✅"
+            },
+            "template": "yellow"
+          },
+          "elements": [
+            {
+              "tag": "div",
+              "text": {
+              "tag": "lark_md",
+              "content": "项目名称: '${{ github.event.repository.name }}'\n工作流名称: '${{ github.workflow }}'\n分支名称: '${{ github.ref_name }}'\n构建人: '${{ github.actor }}'\n构建 ID: '${{ github.run_id }}'\n构建地址: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n"
+              }
+            },
+            {
+              "tag": "hr"
+            }
+          ]
+        }
+        }' ${{ secrets.LARK_WEBHOOK_URL }}
+
+    - name: Notify Lark on Failure
+      if: failure()
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+        "msg_type": "interactive",
+        "card": {
+          "config": {
+            "wide_screen_mode": true
+          },
+          "header": {
+            "title": {
+              "tag": "plain_text",
+              "content": "❌❌  【prod】- 构建失败❌❌"
+            },
+            "template": "yellow"
+          },
+          "elements": [
+            {
+              "tag": "div",
+              "text": {
+              "tag": "lark_md",
+              "content": "项目名称: '${{ github.event.repository.name }}'\n工作流名称: '${{ github.workflow }}'\n分支名称: '${{ github.ref_name }}'\n构建人: '${{ github.actor }}'\n构建 ID: '${{ github.run_id }}'\n构建地址: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\n请检查构建日志"
+              }
+            },
+            {
+              "tag": "hr"
+            }
+          ]
+        }
+        }' ${{ secrets.LARK_WEBHOOK_URL }}
+    - name: Backup build artifacts
+      if: success()  # 仅在部署成功时执行备份
+      run: |
+        echo "➡️ 将build目录备份到Runner服务器的/opt/web/prod/build"
+        if [ -d "/opt/web/prod/build" ]; then
+          echo "目录已存在"
+        else
+          sudo mkdir -p /opt/web/prod/build
+        fi
+        sudo cp -R ./build/* /opt/web/prod/build/
+        echo "✅ 备份完成! 路径: /opt/web/prod/build"
+        ls -l /opt/web/prod/build 

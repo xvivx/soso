@@ -1,0 +1,13 @@
+{
+  "name": "bin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "download": "crowdin download",
+    "upload": "crowdin upload sources"
+  },
+  "dependencies": {
+    "@crowdin/cli": "4.6.0"
+  }
+}

@@ -1,0 +1,364 @@
+@import "./base.css";
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.detrade:has(.detrade-overlay) .detrade-popover-content {
+  @apply z-modal-up;
+}
+.detrade-popover-content[data-state="open"] {
+  animation: fade-in 150ms ease-out;
+}
+
+/* 在触发Suspense时直接关闭Popover面板, Suspense会暂停动画, 现象是页面跳走了Popover的面板还在 */
+.detrade:has(.detrade-screen-loading) .detrade-popover-content {
+  display: none;
+}
+
+.accordion-content[data-state="open"] {
+  animation: accordion-content-slide-down-v 200ms ease-out;
+}
+.accordion-content[data-state="open"][data-orientation="horizontal"] {
+  animation: accordion-content-slide-down-h 200ms ease-out;
+}
+.accordion-content[data-state="closed"] {
+  animation: accordion-content-slide-up-v 200ms ease-out;
+}
+.accordion-content[data-state="closed"][data-orientation="horizontal"] {
+  animation: accordion-content-slide-up-h 200ms ease-out;
+}
+
+.accordion [data-state="open"] .accordion-icon {
+  @apply rotate-90;
+}
+
+.accordion-collapse [data-state="open"] .accordion-icon {
+  @apply -rotate-90;
+}
+.accordion-collapse [data-state="closed"] .accordion-icon {
+  @apply rotate-90;
+}
+
+@keyframes accordion-content-slide-down-v {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-content-slide-up-v {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes accordion-content-slide-down-h {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--radix-collapsible-content-width);
+  }
+}
+@keyframes accordion-content-slide-up-h {
+  from {
+    width: var(--radix-collapsible-content-width);
+  }
+  to {
+    width: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .detrade-menu-hover,
+  .menu-item:hover {
+    background-image: linear-gradient(90deg, #23ee8833, #23ee8800);
+  }
+}
+.menu-item .detrade-icon {
+  @apply shrink-0 transition-none;
+}
+.menu-item-matched {
+  @apply text-brand;
+  background-image: linear-gradient(90deg, rgba(35, 238, 136, 0.2), rgba(35, 238, 136, 0));
+}
+.menu-item-matched .detrade-icon {
+  @apply text-brand;
+}
+
+.contract-place-btn-up {
+  background-image: linear-gradient(to right, rgb(var(--up)), #9fe871);
+  box-shadow:
+    0px 0px 12px 0px rgb(var(--up) / 0.3),
+    0px -2px 0px 0px #1dca6a inset;
+}
+.contract-place-btn-down {
+  background-image: linear-gradient(to right, rgb(var(--down)), #b43b38);
+  box-shadow: 0px -2px 0px 0px #b43b38 inset;
+}
+
+@keyframes caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
+    opacity: 0;
+  }
+}
+.opt-caret-blink {
+  animation: caret-blink 1.25s ease-out infinite;
+}
+
+@keyframes table-odd-row {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes table-even-row {
+  0% {
+    transform: translate3D(0px, -100%, 0);
+  }
+  100% {
+    transform: translate3D(0, 0, 0);
+  }
+}
+
+.detrade-table table > tbody > tr:nth-of-type(2n + 1) {
+  @apply darkness;
+  animation: 0.2s ease-out 0s 1 normal none running table-odd-row;
+}
+.detrade-table table > tbody > tr:nth-of-type(2n) {
+  animation: 0.2s ease-out 0s 1 normal none running table-even-row;
+}
+
+/* 表格固定列样式 */
+.detrade-table .fixed-left-cell::after,
+.detrade-table .fixed-right-cell::after {
+  content: "";
+  @apply absolute inset-y-0 w-3;
+}
+.detrade-table .fixed-left-cell::after {
+  right: -12px;
+  box-shadow: inset 10px 0 8px -8px rgba(0, 0, 0, 0.1);
+}
+.detrade-table .fixed-right-cell::after {
+  left: -12px;
+  box-shadow: inset -10px 0 8px -8px rgba(0, 0, 0, 0.1);
+}
+
+/* 定制弹窗中的表格样式
+ * 场景: 弹窗中只有一个表格, 打开弹窗时横向滚动条要滑动到最下面才能看到
+ * 定制后弹窗不再滚动, 交由表格区域滚动, 可以一屏看到横向滚动条, 提升体验 */
+.detrade-modal:has(.detrade-modal-table) {
+  max-height: none;
+  overflow: hidden;
+}
+
+.detrade-modal:has(.detrade-modal-table) .detrade-table {
+  max-height: 50vh;
+}
+
+.detrade-modal .detrade-table table {
+  @apply bg-layer2;
+}
+
+.detrade-modal {
+  .detrade-table {
+    @apply bg-layer2;
+  }
+
+  .detrade-scrollbar {
+    @apply z-max;
+  }
+}
+
+/* 这样写不兼容时同时失效 */
+.detrade-modal:has(.detrade-modal-footer) {
+  @apply pb-0 !important;
+  .detrade-modal-footer {
+    /* 充当上边距滚动时不会贴在一起 */
+    box-shadow: 0 -12px var(--bg-layer2);
+    @apply sticky bottom-0 z-modal pb-4 bg-layer2;
+  }
+}
+/* 响应式在嵌套时失效了, TODO: fixed */
+.detrade.s768 .detrade-modal:has(.detrade-modal-footer) .detrade-modal-footer {
+  @apply pb-6;
+}
+
+.detrade-scroll-container .detrade-scroll-viewport {
+  overscroll-behavior: inherit;
+}
+
+/* 玩法三用户点击页面经常会有数字被选中, 安卓手机上会弹出搜索, 是visx这个库创建的元素, 禁用其选中 */
+#__react_svg_text_measurement_id {
+  @apply select-none;
+}
+
+@media (min-width: 768px) {
+  .detrade-button:hover .detrade-icon {
+    @apply text-current;
+  }
+}
+
+.detrade-form-error {
+  .detrade-select,
+  .detrade-input {
+    @apply border-error;
+  }
+}
+
+.app-main {
+  min-height: calc(var(--view-h) - var(--header-h) - var(--bottom-h) - var(--safe-area-bottom));
+}
+.detrade.s768 .app-main {
+  padding-top: var(--header-h);
+  @apply min-h-screen;
+}
+
+.app-content.detrade-screen-loading {
+  height: calc(100vh - var(--header-h));
+  @apply flex-center;
+}
+
+.min-h-screen {
+  min-height: 100dvh;
+}
+
+.h-screen {
+  height: 100dvh;
+}
+
+/* 杠杆slider定制样式 */
+.lever-slider .detrade-slider-track {
+  background-image: linear-gradient(90deg, #24ee89 0%, #d7ed47 36.67%, #ff5449 96%);
+}
+.lever-slider .detrade-slider-trigger {
+  background-color: white;
+}
+
+img[src=""],
+img:not([src]) {
+  visibility: hidden;
+}
+
+.detrade-scroll-list {
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  white-space: nowrap;
+}
+
+.safe-bottom-area {
+  border-bottom-width: var(--safe-area-bottom);
+}
+
+@media (min-width: 768px) {
+  .horizontal-scrolling {
+    animation: moveX 30s linear infinite;
+    will-change: transform;
+  }
+
+  .horizontal-scrolling:hover {
+    animation-play-state: paused;
+  }
+}
+
+/* 首页横线滚动动画 */
+@keyframes moveX {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(var(--move-distance));
+  }
+}
+
+@keyframes cutdown-waiting {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(2);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+.cutdown-waiting {
+  animation: cutdown-waiting 0.7s linear infinite;
+}
+
+@keyframes cutdown-bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.cutdown-bounce-in {
+  animation: cutdown-bounce-in 0.99s ease infinite;
+}
+
+@keyframes spread-value {
+  0% {
+    @apply text-up;
+  }
+  50% {
+    @apply text-down;
+  }
+  100% {
+    @apply text-up;
+  }
+}
+.spread-value {
+  animation: spread-value 0.5s steps(1, end) infinite alternate;
+}
+
+.referral-gradient {
+  background-image: linear-gradient(90deg, rgba(36, 238, 137, 0.2) 0%, rgba(159, 232, 113, 0.2) 100%);
+}
+.detrade-light .referral-gradient {
+  background-image: linear-gradient(90deg, rgba(44, 217, 125, 0.2) 0%, rgba(159, 232, 113, 0.2) 100%);
+}
+
+@keyframes tap-profit-pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+.tap-profit-rect {
+  animation: tap-profit-pulse 0.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.tap-trader-avatar-mask {
+  opacity: 0.4;
+}

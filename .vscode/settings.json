@@ -1,0 +1,68 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "avertastd",
+    "Bybit",
+    "chartiq",
+    "cmds",
+    "commisson",
+    "Datepicker",
+    "detrade",
+    "Disp",
+    "dont",
+    "Embla",
+    "esotericsoftware",
+    "Extention",
+    "Fairnes",
+    "fontsource",
+    "grecaptcha",
+    "hoverable",
+    "ianvs",
+    "klines",
+    "LEADERBOARD",
+    "MEXC",
+    "mockjs",
+    "OHLCQuote",
+    "Okex",
+    "pako",
+    "persistor",
+    "preline",
+    "QIANKUN",
+    "qrcode",
+    "quarterary",
+    "Rajdhani",
+    "reactjs",
+    "recaptcha",
+    "reduxjs",
+    "regist",
+    "shadcn",
+    "sitekey",
+    "solana",
+    "STONKS",
+    "stxx",
+    "tailwindcss",
+    "testwww",
+    "timeunit",
+    "trivago",
+    "UNINSTANTIATED",
+    "updown",
+    "visx",
+    "xaxisHeight",
+    "yaxis"
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "tailwindCSS.classAttributes": ["class", "\\w*className"],
+  "tailwindCSS.experimental.classRegex": [
+    ".*[cC]lassName\\:\\s'([^']*)'",
+    ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "files.associations": {
+    "*.svg": "xml"
+  },
+  "workbench.editorAssociations": {
+    "*.svg": "default"
+  }
+}

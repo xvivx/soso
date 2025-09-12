@@ -1,0 +1,208 @@
+html {
+  --kline-bottom-color: rgba(22, 29, 38, 0);
+  --kline-top-color: rgba(205, 233, 25, 0.5);
+  --kline-border-color: #d7ed47;
+  --kline-width: 2px;
+}
+
+body {
+  padding: 0;
+  overflow: hidden;
+}
+
+#chart-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+.trade-order {
+  position: absolute;
+  top: -1000px;
+  left: -1000px;
+  z-index: 5;
+  width: max-content;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* 活跃订单dom样式, 用于mark订单时的拷贝源 */
+.my_trade_order {
+  text-align: center;
+  line-height: 20px;
+}
+
+/* 公共订单dom样式, 用于mark订单时的拷贝源 */
+.other_order {
+  background: #27282d;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+/* 玩法1 close marker竖线 */
+.triangle {
+  position: absolute;
+  right: 50%;
+  bottom: -6px;
+  transform: translateX(50%);
+  border-top: 6px solid;
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+}
+
+/* 玩法1 close marker */
+.marker_arrow {
+  position: absolute;
+  right: 50%;
+  bottom: -20px;
+  transform: translateX(50%);
+}
+
+/* advance 图表区域 */
+.cq-context .ciq-chart-area,
+.cq-context cq-side-panel {
+  bottom: 0;
+}
+
+/* 放大缩小全屏按钮 */
+.chartControls .chartSize {
+  display: none;
+}
+
+.stx_current_hr_down {
+  background-color: #ff5449;
+}
+.stx_current_hr_up {
+  background-color: #2ecc71;
+}
+.stx_candle_down {
+  color: #ff5449;
+  border-left-color: #ff5449;
+}
+.stx_candle_up {
+  color: #2ecc71;
+  border-left-color: #2ecc71;
+}
+/* 蜡烛图上下线颜色 */
+.stx_candle_shadow_up {
+  color: #2ecc71;
+}
+.stx_candle_shadow_down {
+  color: #ff5449;
+}
+
+.stx_crosshair {
+  background-color: #a4a8ab;
+}
+
+/* hover上去x轴显示的样式 */
+.stx-float-date {
+  width: 80px;
+  padding: 2px;
+  border-radius: 3px;
+  color: #fff;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.stx_xaxis,
+.stx_yaxis,
+.ciq-night .stx_xaxis,
+.ciq-night .stx_yaxis {
+  line-height: 1;
+  color: #a4a8ab;
+}
+
+/* hover上去y轴显示的样式 */
+.stx-float-price {
+  line-height: 1;
+  color: #a4a8ab;
+}
+
+/* x周时间分割符样式(比如显示日期时突然显示到9月) */
+.stx_xaxis_dark,
+.ciq-night .stx_xaxis_dark {
+  color: #a4a8ab;
+}
+
+/* 定义十字星蜡烛图颜色(开盘价收盘价最低点最高点都一样就是一条直线) */
+.stx_candle_shadow_even {
+  color: #a4a8ab;
+}
+
+.ciq-night .stx_mountain_chart,
+.stx_mountain_chart {
+  color: var(--kline-bottom-color);
+  background-color: var(--kline-top-color);
+  border-color: var(--kline-border-color);
+  width: var(--kline-width);
+}
+
+.cq-context .stx_mountain_chart {
+  background-color: var(--kline-border-color);
+}
+
+.stx_jump_today {
+  border-radius: 50%;
+  background: transparent !important;
+  width: 36px;
+  height: 36px;
+}
+
+.stx_jump_today span {
+  background-image: url("./arrow.png");
+  background-position: 0 0 !important;
+  background-size: 100% 100%;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ciq-toggles:not(.sidenav-toggle):after {
+  display: none;
+}
+
+cq-toolbar-settings {
+  display: none;
+}
+
+cq-menu-dropdown {
+  border-radius: 8px;
+}
+
+.stx-panel-title.chart-title {
+  display: none;
+}
+
+/* 下拉选小箭头上下居中 */
+.ciq-menu:after {
+  top: 16px;
+}
+.ciq-menu.toggle-options::after {
+  top: 10px;
+}
+
+.ciq-select > span:after {
+  margin-top: 6px;
+}
+
+.ciq-night .chartContainer {
+  background-color: #292d2e;
+}
+
+.ciq-night .ciq-nav {
+  background-color: #323738;
+  border-color: transparent;
+}
+
+/* 去除高级模式下编辑icon左边距 */
+cq-context:not(.break-sm) .ciq-nav {
+  padding-left: 0;
+}
