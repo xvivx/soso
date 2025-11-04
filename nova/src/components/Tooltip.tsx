@@ -3,12 +3,11 @@ import { cn } from '@utils';
 import Popover, { PopoverProps } from './FunctionRender/Popover';
 
 const Tooltip = memo(function Tooltip(props: Omit<PopoverProps, 'showArrow'>) {
-  const { side = 'top', trigger = 'hover', overlayClassName, ...resets } = props;
+  const { side = 'top', overlayClassName, ...resets } = props;
   return (
     <Popover
       {...resets}
       side={side}
-      trigger={trigger}
       showArrow
       sideOffset={4}
       overlayClassName={cn(
